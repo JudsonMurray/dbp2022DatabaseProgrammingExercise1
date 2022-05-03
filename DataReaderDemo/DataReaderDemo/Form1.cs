@@ -98,32 +98,67 @@ namespace DataReaderDemo
         {
             // this time, I'm cleaning up the code a bit and making it shorter
             // by using the Constructors and a using
-
+            string connStr = "server=(local);database=Northwind;integrated security=SSPI";
             // create a variable to store the connection string
-
 
             // create a variable to store the sql select statement we 
             // want to execute
+            string sql = "SELECT * FROM Shippers ORDER BY ShipperID DESC";
 
 
             // create a connection object
-
+            SqlConnection conn = new SqlConnection(connStr);
+            
 
             // To ensure that connections are always closed, open 
             // the connection inside a using block. This ensures that the 
             // connection is closed when the code exists the block
             // in a using block, do the following
-                // create a command object, and pass the sql statement and connection
-                // created above into the Constructor
-                // open the connection, Execute the reader, declare the variables to store
-                // the data, and then
-                // check to make sure the SqlDataReader has returned records
-                // if it has, loop through the SqlDataReader, and output each record
-                // to a MessageBox
-                // close the reader
-            
+            // create a command object, and pass the sql statement and connection
+            // created above into the Constructor
+            // open the connection, Execute the reader, declare the variables to store
+            // the data, and then
+            // check to make sure the SqlDataReader has returned records
+            // if it has, loop through the SqlDataReader, and output each record
+            // to a MessageBox
+            // close the reader
 
-                // close the reader
+            using (conn)
+            {
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+
+                conn.Open();
+
+                SqlDataReader dr = cmd.ExecuteReader();
+
+
+                int shipperID = -1;
+                string companyName;
+                string phone;
+
+
+
+                if (dr.HasRows)
+                {
+                    MessageBox.Show($"There are {dr.FieldCount} columns");
+
+                    while (dr.Read())
+                    {
+                        shipperID =     Convert.ToInt32(dr["shipperID"]);
+                        companyName =   dr["CompanyName"].ToString();
+                        phone =         dr["Phone"].ToString();
+
+                        txtDemo2.Text += $"ShipperID: {shipperID}\tCompanyName: {companyName}\tPhone: {phone}\r\n";
+                    }
+
+                }
+
+            }
+
+
+
+            // close the reader
 
         }
     }
